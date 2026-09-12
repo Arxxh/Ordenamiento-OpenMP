@@ -14,10 +14,10 @@ using namespace std;
 // ==========================================
 
 // PRIMERA EJECUCION
-const int TAM = 10000000; // 100 y 10,000,000
-const int MAX_VALOR = 2000000; // 200 y 2,000,000
-const bool MOSTRAR_ARREGLO = false; // sin mostrar el contenido o mostrar el contenido
- 
+const int TAM = 100;
+const int MAX_VALOR = 200;
+const bool MOSTRAR_ARREGLO = true;
+
 
 /*
 SEGUNDA EJECUCION
@@ -25,9 +25,9 @@ SEGUNDA EJECUCION
 Cuando terminemos la prueba de 100 elementos,
 detener el programa y cambiar las constantes por:
 
-const int TAM = 10000000;
-const int MAX_VALOR = 2000000;
-const bool MOSTRAR_ARREGLO = false;
+const int TAM = 10000000; // 10 millones
+const int MAX_VALOR = 2000000; // 2 millones
+const bool MOSTRAR_ARREGLO = false; // no mostramos lo que contiene el arreglo
 
 */
 
