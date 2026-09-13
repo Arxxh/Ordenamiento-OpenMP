@@ -30,7 +30,7 @@ int main()
 {
     const int n = 10;
 
-    int arreglo[n] = {
+    int* arreglo = new int[n] {
         15, 3, 8, 3, 20,
         1, 9, 7, 15, 2
     };
@@ -61,6 +61,8 @@ int main()
     {
         cout << "ERROR" << endl;
     }
+
+    delete[] arreglo;
 
     return 0;
 }

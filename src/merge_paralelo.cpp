@@ -3,11 +3,10 @@
 #include "merge_sort.h"
 
 
-// Tamaño mínimo para seguir creando tareas.
-//
-// Si la sección es menor a este tamaño,
-// se continúa de manera secuencial.
-static const int UMBRAL_TAREA = 50000;
+// Evita crear tareas demasiado pequeñas. El umbral definitivo
+// se calcula para cada ejecución de acuerdo con el tamaño del
+// problema y el número de hilos disponibles.
+static const int UMBRAL_MINIMO = 16;
 
 
 // ==========================================
@@ -132,7 +131,8 @@ static void mergeSortTareas(
     int* auxiliar,
     int base,
     int inicio,
-    int fin
+    int fin,
+    int umbralTarea
 )
 {
     if (inicio >= fin)
@@ -143,7 +143,7 @@ static void mergeSortTareas(
 
     // Si el problema ya es pequeño,
     // dejamos de generar tareas.
-    if (cantidad <= UMBRAL_TAREA)
+    if (cantidad <= umbralTarea)
     {
         mergeSortInternoSecuencial(
             arreglo,
@@ -165,27 +165,29 @@ static void mergeSortTareas(
     {
         // Ordenar mitad izquierda.
         #pragma omp task shared(arreglo, auxiliar) \
-        firstprivate(base, inicio, medio)
+        firstprivate(base, inicio, medio, umbralTarea)
         {
             mergeSortTareas(
                 arreglo,
                 auxiliar,
                 base,
                 inicio,
-                medio
+                medio,
+                umbralTarea
             );
         }
 
         // Ordenar mitad derecha.
         #pragma omp task shared(arreglo, auxiliar) \
-        firstprivate(base, medio, fin)
+        firstprivate(base, medio, fin, umbralTarea)
         {
             mergeSortTareas(
                 arreglo,
                 auxiliar,
                 base,
                 medio + 1,
-                fin
+                fin,
+                umbralTarea
             );
         }
 
@@ -228,6 +230,20 @@ void mergeSortParalelo(
     int* auxiliar =
         new int[cantidad];
 
+    // Para arreglos grandes se generan aproximadamente cuatro tareas
+    // finales por hilo. El umbral mínimo permite que con 100 elementos
+    // también se demuestre el uso real de tareas sin crear demasiadas.
+    int numHilos = omp_get_max_threads();
+
+    if (numHilos < 1)
+        numHilos = 1;
+
+    int umbralTarea =
+        cantidad / (numHilos * 4);
+
+    if (umbralTarea < UMBRAL_MINIMO)
+        umbralTarea = UMBRAL_MINIMO;
+
     #pragma omp parallel
     {
         // Solo un hilo inicia la recursión.
@@ -241,7 +257,8 @@ void mergeSortParalelo(
                 auxiliar,
                 inicio,
                 inicio,
-                fin
+                fin,
+                umbralTarea
             );
         }
     }
