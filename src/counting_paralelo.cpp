@@ -1,3 +1,4 @@
+// ITERATIVO
 #include <omp.h>
 #include <cstddef>
 

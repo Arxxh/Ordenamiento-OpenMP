@@ -1,3 +1,4 @@
+// ITERATIVO
 #include "counting_sort.h"
 
 void countingSortSecuencial(int* arreglo, int n, int maxValor)
