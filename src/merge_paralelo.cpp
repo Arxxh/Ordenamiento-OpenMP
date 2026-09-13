@@ -1,3 +1,4 @@
+// RECURSIVO
 #include <omp.h>
 
 #include "merge_sort.h"
